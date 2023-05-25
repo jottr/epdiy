@@ -33,6 +33,9 @@ menu "E-Paper Driver"
 
         config EPD_DISPLAY_TYPE_ED097OC4_LQ
             bool "ED097OC4 Low Quality"
+
+        config EPD_DISPLAY_TYPE_GDEW101C01
+            bool "GDEW101C01 10.2 inch Good-Display DES color display"
     endchoice
 
 

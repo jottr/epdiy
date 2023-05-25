@@ -1,5 +1,6 @@
 set(        
-    app_sources "jpg-render.c"
+    #app_sources "jpg-render.c"
+    app_sources "jpg-render-color.c"
     #app_sources "jpgdec-render.cpp"
     )
 

@@ -91,6 +91,47 @@ void epd_draw_pixel(int x, int y, uint8_t color, uint8_t *framebuffer) {
   }
 }
 
+// What Color is on top of the DES Color Filter
+// This applies only to DES Good-Display epapers. Not tested in any other model 
+uint8_t epd_get_panel_color(int x, int y, uint8_t r, uint8_t g, uint8_t b) {
+    uint8_t c = (x + (EPD_HEIGHT - y)) % 3;
+    switch (c)
+    {
+    case 0:
+      return r; // R
+      break;
+    case 1:
+      return b; // B
+      break;
+    default:
+      return g; // G
+      break;
+    }
+}
+
+// Pass the x, y and color. It will then let the background under color filter get the right grayscale (WHITE shows color)
+void epd_draw_cpixel(int x, int y, uint8_t r, uint8_t g, uint8_t b, uint8_t *framebuffer) {
+  // Check rotation and move pixel around if necessary
+  Coord_xy coord = _rotate(x, y);
+  x = coord.x;
+  y = coord.y;
+
+  if (x < 0 || x >= EPD_WIDTH) {
+    return;
+  }
+  if (y < 0 || y >= EPD_HEIGHT) {
+    return;
+  }
+  uint8_t color = epd_get_panel_color(x, y, r, g, b);
+
+  uint8_t *buf_ptr = &framebuffer[y * EPD_WIDTH / 2 + x / 2];
+  if (x % 2) {
+    *buf_ptr = (*buf_ptr & 0x0F) | (color & 0xF0);
+  } else {
+    *buf_ptr = (*buf_ptr & 0xF0) | (color >> 4);
+  }
+}
+
 void epd_draw_circle(int x0, int y0, int r, uint8_t color,
                      uint8_t *framebuffer) {
   int f = 1 - r;

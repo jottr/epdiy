@@ -262,6 +262,24 @@ void epd_copy_to_framebuffer(EpdRect image_area, const uint8_t *image_data,
 void epd_draw_pixel(int x, int y, uint8_t color, uint8_t *framebuffer);
 
 /**
+ * @brief What color is on that x & y coordinates. Receives RGB and returns the grayscale for X:Y on that pixel
+ * @return uint8_t 
+ */
+uint8_t epd_get_panel_color(int x, int y, uint8_t r, uint8_t g, uint8_t b);
+
+/**
+ * @brief This draws a pixel begin aware of what color filter is on top (RGB for DES displays)
+ * 
+ * @param x 
+ * @param y 
+ * @param r 
+ * @param g 
+ * @param b 
+ * @param framebuffer 
+ */
+void epd_draw_cpixel(int x, int y, uint8_t r, uint8_t g, uint8_t b, uint8_t *framebuffer);
+
+/**
  * Draw a horizontal line to a given framebuffer.
  *
  * @param x: Horizontal start position in pixels.

@@ -29,33 +29,27 @@
 /// Height of the display area in pixels.
 #define EPD_HEIGHT 825
 #elif defined(CONFIG_EPD_DISPLAY_TYPE_ED133UT2)
-#define EPD_WIDTH 1600
-#define EPD_HEIGHT 1200
+  #define EPD_WIDTH 1600
+  #define EPD_HEIGHT 1200
 #elif defined(CONFIG_EPD_DISPLAY_TYPE_ED060SC4)
-/// Width of the display area in pixels.
-#define EPD_WIDTH 800
-/// Height of the display area in pixels.
-#define EPD_HEIGHT 600
+  #define EPD_WIDTH 800
+  #define EPD_HEIGHT 600
 #elif defined(CONFIG_EPD_DISPLAY_TYPE_ED060SCT)
-/// Width of the display area in pixels.
-#define EPD_WIDTH 800
-/// Height of the display area in pixels.
-#define EPD_HEIGHT 600
+  #define EPD_WIDTH 800
+  #define EPD_HEIGHT 600
 #elif defined(CONFIG_EPD_DISPLAY_TYPE_ED060XC3)
-/// Width of the display area in pixels.
-#define EPD_WIDTH 1024
-/// Height of the display area in pixels.
-#define EPD_HEIGHT 758
+  #define EPD_WIDTH 1024
+  #define EPD_HEIGHT 758
 #elif defined(CONFIG_EPD_DISPLAY_TYPE_ED047TC1) || defined(CONFIG_EPD_DISPLAY_TYPE_ED047TC2)
-/// Width of the display area in pixels.
-#define EPD_WIDTH 960
-/// Height of the display area in pixels.
-#define EPD_HEIGHT 540
+  #define EPD_WIDTH 960
+  #define EPD_HEIGHT 540
 #elif defined(CONFIG_EPD_DISPLAY_TYPE_ED078KC1)
-/// Width of the display area in pixels.
-#define EPD_WIDTH 1872
-/// Height of the display area in pixels.
-#define EPD_HEIGHT 1404
+  #define EPD_WIDTH 1872
+  #define EPD_HEIGHT 1404
+
+#elif defined(CONFIG_EPD_DISPLAY_TYPE_GDEW101C01)
+  #define EPD_WIDTH 2232
+  #define EPD_HEIGHT 1680
 #else
 #error "no display type defined!"
 #endif
@@ -118,6 +112,8 @@ extern const EpdWaveform epdiy_ED133UT2;
 #elif defined(CONFIG_EPD_DISPLAY_TYPE_ED097TC2)
 #define EPD_BUILTIN_WAVEFORM &epdiy_ED097TC2
 #elif defined (CONFIG_EPD_DISPLAY_TYPE_ED133UT2)
+#define EPD_BUILTIN_WAVEFORM &epdiy_ED133UT2
+#elif defined (CONFIG_EPD_DISPLAY_TYPE_GDEW101C01)
 #define EPD_BUILTIN_WAVEFORM &epdiy_ED133UT2
 #endif
 
