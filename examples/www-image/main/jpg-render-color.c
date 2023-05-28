@@ -48,7 +48,7 @@ JRESULT rc;
 uint8_t *fb;            // EPD 2bpp buffer
 uint8_t *source_buf;    // JPG download buffer
 uint8_t *decoded_image; // RAW decoded image
-static uint8_t tjpgd_work[3096]; // tjpgd 3096 is the minimum size
+static uint8_t tjpgd_work[4096]; // tjpgd 3096 is the minimum size
 
 uint32_t buffer_pos = 0;
 uint32_t time_download = 0;
@@ -128,54 +128,6 @@ uint8_t find_closest_palette_color(uint8_t oldpixel)
   return oldpixel & 0xF0;
 }
 
-//====================================================================================
-//   Decode and paint onto the Epaper screen
-//====================================================================================
-void jpegRender(int xpos, int ypos, int width, int height) {
- #if JPG_DITHERING
- unsigned long pixel=0;
- for (uint16_t by=0; by<ep_height;by++)
-  {
-    for (uint16_t bx=0; bx<ep_width;bx++)
-    {
-        int oldpixel = decoded_image[pixel];
-        int newpixel = find_closest_palette_color(oldpixel);
-        int quant_error = oldpixel - newpixel;
-        decoded_image[pixel]=newpixel;
-        if (bx<(ep_width-1))
-          decoded_image[pixel+1] = minimum(255,decoded_image[pixel+1] + quant_error * 7 / 16);
-
-        if (by<(ep_height-1))
-        {
-          if (bx>0)
-            decoded_image[pixel+ep_width-1] =  minimum(255,decoded_image[pixel+ep_width-1] + quant_error * 3 / 16);
-
-          decoded_image[pixel+ep_width] =  minimum(255,decoded_image[pixel+ep_width] + quant_error * 5 / 16);
-          if (bx<(ep_width-1))
-            decoded_image[pixel+ep_width+1] = minimum(255,decoded_image[pixel+ep_width+1] + quant_error * 1 / 16);
-        }
-        pixel++;
-    }
-  }
-  #endif
-
-  // Write to display
-  uint64_t drawTime = esp_timer_get_time();
-  uint32_t padding_x = (epd_rotated_display_width() - width) / 2;
-  uint32_t padding_y = (epd_rotated_display_height() - height) / 2;
-
-  ESP_LOGI("Padding", "x:%d y:%d", (int)padding_x, (int)padding_y);
-
-  for (uint32_t by=0; by<height-1;by++) {
-    for (uint32_t bx=0; bx<width;bx++) {
-        epd_draw_pixel(bx + padding_x, by + padding_y, decoded_image[by * width + bx], fb);
-    }
-  }
-  // calculate how long it took to draw the image
-  time_render = (esp_timer_get_time() - drawTime)/1000;
-  ESP_LOGI("render", "%d ms - jpeg draw", (int)time_render);
-}
-
 void deepsleep(){
     esp_deep_sleep(1000000LL * 60 * DEEPSLEEP_MINUTES_AFTER_RENDER);
 }
@@ -225,8 +177,6 @@ tjd_output(JDEC *jd,     /* Decompressor object of current session */
 
     /* Optimization note: If we manage to apply here the epd_draw_pixel directly
        then it will be no need to keep a huge raw buffer (But will loose dither) */
-
-    //decoded_image[yy * image_width + xx] = epd_get_panel_color(xx, yy, r, g, b);
     epd_draw_cpixel(xx, yy, r, g, b, hl.front_fb);
   }
 
@@ -256,9 +206,6 @@ int drawBufJpeg(uint8_t *source_buf, int xpos, int ypos) {
 
   ESP_LOGI("JPG", "width: %d height: %d\n", jd.width, jd.height);
   ESP_LOGI("decode", "%d ms . image decompression", (int)time_decomp);
-
-  // Render the image onto the screen at given coordinates
-  //jpegRender(xpos, ypos, jd.width, jd.height);
 
   return 1;
 }
@@ -521,10 +468,9 @@ void app_main() {
   fb = epd_hl_get_framebuffer(&hl);
   epd_set_rotation(DISPLAY_ROTATION);
   printf("after epd_hl_init() Free PSRAM: %d\n", getFreePsram());
-  vTaskDelay(pdMS_TO_TICKS(100));
 
   // Should be big enough to allocate the JPEG file size
-  source_buf = (uint8_t *)heap_caps_malloc(290000, MALLOC_CAP_SPIRAM);
+  source_buf = (uint8_t *)heap_caps_malloc(390000, MALLOC_CAP_SPIRAM);
   if (source_buf == NULL) {
       ESP_LOGE("main", "Initial alloc source_buf failed!");
   }
@@ -532,8 +478,6 @@ void app_main() {
   #if VALIDATE_SSL_CERTIFICATE == true
     obtain_time();
   #endif
-
-
 
   epd_poweron();
   epd_fullclear(&hl, 25);
