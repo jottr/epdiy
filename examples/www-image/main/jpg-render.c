@@ -510,7 +510,7 @@ void app_main() {
   memset(decoded_image, 255, EPD_WIDTH * EPD_HEIGHT);
 
   // Should be big enough to allocate the JPEG file size
-  source_buf = (uint8_t *)heap_caps_malloc(EPD_WIDTH * EPD_HEIGHT, MALLOC_CAP_SPIRAM);
+  source_buf = (uint8_t *)heap_caps_malloc(350000, MALLOC_CAP_SPIRAM);
   if (source_buf == NULL) {
       ESP_LOGE("main", "Initial alloc source_buf failed!");
   }

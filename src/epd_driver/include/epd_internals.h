@@ -96,6 +96,7 @@ extern const EpdWaveform epdiy_ED097TC2;
 extern const EpdWaveform epdiy_ED060XC3;
 extern const EpdWaveform epdiy_ED060SCT;
 extern const EpdWaveform epdiy_ED133UT2;
+extern const EpdWaveform epdiy_GDEW101C01;
 
 #if defined(CONFIG_EPD_DISPLAY_TYPE_ED047TC1)
 #define EPD_BUILTIN_WAVEFORM &epdiy_ED047TC1
@@ -114,7 +115,7 @@ extern const EpdWaveform epdiy_ED133UT2;
 #elif defined (CONFIG_EPD_DISPLAY_TYPE_ED133UT2)
 #define EPD_BUILTIN_WAVEFORM &epdiy_ED133UT2
 #elif defined (CONFIG_EPD_DISPLAY_TYPE_GDEW101C01)
-#define EPD_BUILTIN_WAVEFORM &epdiy_ED133UT2
+#define EPD_BUILTIN_WAVEFORM &epdiy_GDEW101C01
 #endif
 
 /// Font data stored PER GLYPH
