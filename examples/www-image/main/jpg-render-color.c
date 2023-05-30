@@ -21,6 +21,10 @@
 #include "esp_http_client.h"
 #include "esp_sntp.h"
 
+// JPEG Render settings
+#define ALLOC_JPG_BUFF 600000 // Max JPG size: 600 Kb please level up your compression
+double gamma_value = 0.7;
+
 // JPG decoder is on ESP32 rom for this version
 #if ESP_IDF_VERSION_MAJOR >= 4 // IDF 4+
   #include "esp32/rom/tjpgd.h"
@@ -30,7 +34,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <math.h> // round + pow
+//#include <math.h> // round + pow
 
 #include "epd_driver.h"
 #include "epd_highlevel.h"
@@ -466,11 +470,12 @@ void app_main() {
   printf("before epd_hl_init() PSRAM: %d\n", getFreePsram());
   hl = epd_hl_init(EPD_BUILTIN_WAVEFORM);
   fb = epd_hl_get_framebuffer(&hl);
+  epd_set_gamma_curve(gamma_value);
   epd_set_rotation(DISPLAY_ROTATION);
   printf("after epd_hl_init() Free PSRAM: %d\n", getFreePsram());
 
   // Should be big enough to allocate the JPEG file size
-  source_buf = (uint8_t *)heap_caps_malloc(390000, MALLOC_CAP_SPIRAM);
+  source_buf = (uint8_t *)heap_caps_malloc(ALLOC_JPG_BUFF, MALLOC_CAP_SPIRAM);
   if (source_buf == NULL) {
       ESP_LOGE("main", "Initial alloc source_buf failed!");
   }

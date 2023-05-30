@@ -280,6 +280,13 @@ uint8_t epd_get_panel_color(int x, int y, uint8_t r, uint8_t g, uint8_t b);
 void epd_draw_cpixel(int x, int y, uint8_t r, uint8_t g, uint8_t b, uint8_t *framebuffer);
 
 /**
+ * @brief Assign gamma curve values: <1 darken 0.9  |  >1 brighten 1.2 1.4 higher and is too bright
+ * 
+ * @param gamma_value 
+ */
+void epd_set_gamma_curve(double gamma_value);
+
+/**
  * Draw a horizontal line to a given framebuffer.
  *
  * @param x: Horizontal start position in pixels.

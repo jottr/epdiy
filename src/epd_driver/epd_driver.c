@@ -5,12 +5,15 @@
 #include "esp_heap_caps.h"
 #include "esp_log.h"
 #include "esp_types.h"
+#include <math.h> // round + pow
 
 // Simple x and y coordinate
 typedef struct {
     uint16_t x;
     uint16_t y;
 } Coord_xy;
+
+static uint8_t gamme_curve[256];
 
 // Display rotation. Can be updated using epd_set_rotation(enum EpdRotation)
 static enum EpdRotation display_rotation = EPD_ROT_LANDSCAPE;
@@ -93,19 +96,19 @@ void epd_draw_pixel(int x, int y, uint8_t color, uint8_t *framebuffer) {
 
 // What Color is on top of the DES Color Filter
 // This applies only to DES Good-Display epapers. Not tested in any other model 
+// Please do not forget to call epd_set_gamma_curve(double gamma_value) if you work with COLOR!
 uint8_t epd_get_panel_color(int x, int y, uint8_t r, uint8_t g, uint8_t b) {
     uint8_t c = (x + (EPD_HEIGHT - y)) % 3;
     switch (c)
     {
-    case 0:
-      return r; // R
-      break;
-    case 1:
-      return b; // B
-      break;
-    default:
-      return g; // G
-      break;
+      case 0:
+        return gamme_curve[r]; // R
+        break;
+      case 1:
+        return gamme_curve[b]; // B
+        break;
+      default:
+        return gamme_curve[g];
     }
 }
 
@@ -421,7 +424,14 @@ enum EpdDrawError epd_draw_image(EpdRect area, const uint8_t *data, const EpdWav
 }
 
 void epd_set_rotation(enum EpdRotation rotation) {
-      display_rotation = rotation;
+    display_rotation = rotation;
+}
+
+void epd_set_gamma_curve(double gamma_value) {
+    double gammaCorrection = 1.0 / gamma_value;
+    for (int gray_value =0; gray_value<256;gray_value++) {
+      gamme_curve[gray_value]= round (255*pow(gray_value/255.0, gammaCorrection));
+    }
 }
 
 enum EpdRotation epd_get_rotation() {

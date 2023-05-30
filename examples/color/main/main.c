@@ -17,7 +17,7 @@ int color_test() {
   EpdRect epd_area = {
       .x = 0,
       .y = 0,
-      .width = EPD_WIDTH-1,
+      .width = EPD_WIDTH/2,
       .height = EPD_HEIGHT
   };
 
@@ -43,9 +43,6 @@ int color_test() {
     vTaskDelay(1);
   }
 
-  epd_poweron();
-  // Color test
-  
   enum EpdDrawError _err = epd_hl_update_screen(&hl, MODE_GC16, temperature);
   epd_poweroff();
   return _err;
@@ -69,7 +66,8 @@ void app_main() {
   fb = epd_hl_get_framebuffer(&hl);
   printf("after epd_hl_init() Free PSRAM: %d\n", getFreePsram());
 
-  
+
+  epd_poweron();  
   color_test();
   printf("color example\n");
 

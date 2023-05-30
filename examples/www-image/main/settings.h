@@ -4,7 +4,7 @@
 
 // Affects the gamma to calculate gray (lower is darker/higher contrast)
 // Nice test values: 0.9 1.2 1.4 higher and is too bright
-double gamma_value = 0.7;
+//double gamma_value = 0.7;
 
 // - - - - Display configuration - - - - - - - - -
 // EPD Waveform should match your EPD for good grayscales
@@ -35,6 +35,6 @@ double gamma_value = 0.7;
 #define JPG_DITHERING false
 
 // As default is 512 without setting buffer_size property in esp_http_client_config_t
-#define HTTP_RECEIVE_BUFFER_SIZE 1000
+#define HTTP_RECEIVE_BUFFER_SIZE 1200
 
 #define DEBUG_VERBOSE true
