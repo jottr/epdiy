@@ -257,11 +257,19 @@ esp_err_t _http_event_handler(esp_http_client_event_t *evt)
           //printf("%lld bytes read from %s\n\n", img_buf_pos, IMG_URL);
           drawBufJpeg(source_buf, 0, 0);
           time_download = (esp_timer_get_time()-startTime)/1000;
-          //ESP_LOGI("www-dw", "%d ms - download", time_download);
+          ESP_LOGI("www-dw", "%ld ms - download", time_download);
           // Refresh display
           epd_hl_update_screen(&hl, MODE_GC16, 25);
 
-          //ESP_LOGI("total", "%lld ms - total time spent\n", time_download+time_decomp+time_render);
+          ESP_LOGI("total", "%ld ms - total time spent\n", time_download+time_decomp+time_render);
+
+          #if MILLIS_DELAY_BEFORE_SLEEP>0
+            vTaskDelay(MILLIS_DELAY_BEFORE_SLEEP / portTICK_PERIOD_MS);
+          #endif
+          printf("Poweroff EPD and go to sleep %d minutes\n", DEEPSLEEP_MINUTES_AFTER_RENDER);
+          epd_poweroff();
+          vTaskDelay(5); 
+          deepsleep();
         }
         break;
 
@@ -318,13 +326,6 @@ static void http_post(void)
     
     
     esp_http_client_cleanup(client);
-
-    #if MILLIS_DELAY_BEFORE_SLEEP>0
-      vTaskDelay(MILLIS_DELAY_BEFORE_SLEEP / portTICK_PERIOD_MS);
-    #endif
-    printf("Poweroff EPD and go to sleep %d minutes\n", DEEPSLEEP_MINUTES_AFTER_RENDER);
-    epd_poweroff();
-    //deepsleep();
 }
 
 /* FreeRTOS event group to signal when we are connected*/

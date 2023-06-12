@@ -13,7 +13,7 @@
 // - - - - end of Display configuration  - - - - -
 
 // Deepsleep configuration
-#define MILLIS_DELAY_BEFORE_SLEEP 2000
+#define MILLIS_DELAY_BEFORE_SLEEP 1000
 #define DEEPSLEEP_MINUTES_AFTER_RENDER 16
 
 // Image URL and jpg settings. Make sure to update WIDTH/HEIGHT if using loremflickr
